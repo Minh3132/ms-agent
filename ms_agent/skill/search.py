@@ -85,4 +85,10 @@ class SkillSearchEngine:
 
         if docs:
             self._retriever.index(docs, ids)
+        else:
+            # Retriever implementations retain their previous index when no
+            # documents are supplied. Rebuild the backend so searches cannot
+            # return skills that have since all been disabled or removed.
+            self._retriever = self._build_retriever(self._backend_name,
+                                                    **self._kwargs)
         self._index_version = current_version
